@@ -2,8 +2,8 @@ name: Deploy Vite to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main ]       # main에 푸시되면 배포
+  workflow_dispatch:         # 수동 실행 허용
 
 permissions:
   contents: read
@@ -30,17 +30,20 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Build
+      - name: Build (Vite)
         env:
+          # vite.config.ts의 base 분기에서 사용됨
           GITHUB_ACTIONS: true
           CI: true
-          # NODE_OPTIONS: --max_old_space_size=4096  # 큰 번들이면 활성화
+          # 큰 번들이면 주석 해제
+          # NODE_OPTIONS: --max_old_space_size=4096
         run: npm run build
 
+      # SPA 라우팅: 직접 URL로 들어올 때 404 방지
       - name: SPA fallback (copy index.html to 404.html)
         run: cp dist/index.html dist/404.html
 
-      # (선택) 커스텀 도메인
+      # (옵션) 커스텀 도메인 사용 시, 레포 변수 CUSTOM_DOMAIN에 도메인 넣어두면 자동 생성
       # - name: Add CNAME
       #   if: ${{ vars.CUSTOM_DOMAIN != '' }}
       #   run: echo "${{ vars.CUSTOM_DOMAIN }}" > dist/CNAME
