@@ -2,8 +2,8 @@ name: Deploy Vite to GitHub Pages
 
 on:
   push:
-    branches: [ main ]   # 배포 트리거 브랜치
-  workflow_dispatch:     # 수동 실행도 가능
+    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -32,14 +32,18 @@ jobs:
 
       - name: Build
         env:
-          # Actions 환경에서 base 자동 분기하려면 위 vite.config.ts 참고
           GITHUB_ACTIONS: true
+          CI: true
+          # NODE_OPTIONS: --max_old_space_size=4096  # 큰 번들이면 활성화
         run: npm run build
 
-      # SPA 라우팅용 404 처리 (선택)
       - name: SPA fallback (copy index.html to 404.html)
-        run: |
-          cp dist/index.html dist/404.html
+        run: cp dist/index.html dist/404.html
+
+      # (선택) 커스텀 도메인
+      # - name: Add CNAME
+      #   if: ${{ vars.CUSTOM_DOMAIN != '' }}
+      #   run: echo "${{ vars.CUSTOM_DOMAIN }}" > dist/CNAME
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
