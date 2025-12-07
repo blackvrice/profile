@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-    base : process.env.GITHUB_ACTIONS ? '/Profile/' : '/',
+    base : process.env.GITHUB_ACTIONS ? '/profile/' : '/',
     plugins: [react()],
     server: {
         proxy: {
