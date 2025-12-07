@@ -1,9 +1,8 @@
-import {defineConfig} from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
-    base : process.env.GITHUB_ACTIONS ? '/profile/' : '/',
+    base: '/',   // ★ 중요: 커스텀 도메인은 항상 root
     plugins: [react()],
     server: {
         proxy: {
