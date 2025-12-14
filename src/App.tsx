@@ -3,6 +3,7 @@ import {Box, Tab, Tabs} from '@mui/material'
 import Algorithm from "./Algorithm.tsx";
 import Layout from "./layout.tsx";
 import Career from "./Career.tsx";
+import Project from "./Project.tsx";
 
 function App() {
     const [tab, setTab] = useState(0);
@@ -17,7 +18,7 @@ function App() {
             </Tabs>
             {tab === 0 && <Career/>}
             {tab === 1 && <Algorithm/>}
-            {tab === 2 && <Box>Project</Box>}
+            {tab === 2 && <Project/>}
             {tab === 3 && <Box>Study</Box>}
         </Box>
     )
