@@ -32,9 +32,9 @@ function SkillsRow({ skills }: { skills: { name: string; icon: string; color?: s
 
 function SocialLinks() {
     const links = [
-        { name: 'GitHub',   href: 'https://github.com/blackvrice',      icon: 'mdi:github' },
-        { name: 'LinkedIn', href: 'https://linkedin.com/in/your-id',    icon: 'mdi:linkedin' },
-        { name: 'Blog',     href: 'https://your-blog.example',          icon: 'mdi:link-variant' },
+        { name: 'GitHub',   href: 'https://github.com/blackvrice',      icon: 'logos:github-icon' },
+        { name: 'LinkedIn', href: 'https://linkedin.com/in/your-id',    icon: 'logos:linkedin-icon' },
+        { name: 'Blog',     href: 'https://your-blog.example',          icon: 'mdi:web' },
         { name: 'Email',    href: 'mailto:blackvrice@naver.com',        icon: 'mdi:email' },
     ];
     return (
