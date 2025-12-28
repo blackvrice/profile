@@ -34,7 +34,8 @@ function SocialLinks() {
     const links = [
         { name: 'GitHub',   href: 'https://github.com/blackvrice',      icon: 'logos:github-icon' },
         { name: 'LinkedIn', href: 'https://linkedin.com/in/your-id',    icon: 'logos:linkedin-icon' },
-        { name: 'Blog',     href: 'https://your-blog.example',          icon: 'mdi:web' },
+        { name: 'Blog',     href: 'https://blackvrice.tistory.com',          icon: 'simple-icons:tistory' },
+        { name: 'velog',     href: 'https://velog.io/@blackvrice/posts',          icon: 'simple-icons:velog' },
         { name: 'Email',    href: 'mailto:blackvrice@naver.com',        icon: 'mdi:email' },
     ];
     return (
