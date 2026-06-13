@@ -114,6 +114,18 @@ export default function Project() {
             </Section>
 
             <Section
+                name="RTS 프로젝트"
+                category="C++ RTS Game"
+                githubUrl="https://github.com/blackvrice/rts"
+                summary="C++와 SFML 기반의 실시간 전략 게임 프로젝트입니다. 유닛 선택, 명령 처리, 전투, 자원 채집, 안개 시야 같은 RTS 핵심 시스템을 직접 구현하고 있습니다."
+            >
+                <Stack spacing={2}>
+                    <TagGroup title="주요 기술" tags={["C++", "SFML", "CMake", "Tiled Map", "tmxlite"]} />
+                    <TagGroup title="구현 영역" tags={["Unit Control", "Command", "Combat", "Resource", "Fog of War"]} />
+                </Stack>
+            </Section>
+
+            <Section
                 name="Tycoon 프로젝트"
                 category="Unity Tycoon Game"
                 githubUrl="https://github.com/blackvrice/Tycoon"
