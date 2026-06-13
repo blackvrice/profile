@@ -1,133 +1,116 @@
-import {
-    Box,
-    Card,
-    CardHeader,
-    CardContent,
-    Typography,
-    Divider,
-    Stack,
-    Tooltip,
-} from "@mui/material";
-import { Icon } from "@iconify/react";
-import { careerData, type CareerItem } from "./CareerData.ts";
+import {alpha, Box, Chip, Divider, Stack, Tooltip, Typography} from "@mui/material";
+import {Icon} from "@iconify/react";
+import {careerData, type CareerItem} from "./CareerData.ts";
 
-// ✅ 기술 아이콘 표시용 컴포넌트
-function SkillsRow({
-                       skills,
-                   }: {
-    skills: { name: string; icon: string; color?: string }[];
-}) {
+function SkillsRow({skills}: {skills: CareerItem["skills"]}) {
     return (
-        <Box
-            role="list"
-            aria-label="사용 언어 아이콘 목록"
-            sx={{
-                display: "inline-flex",
-                flexWrap: "wrap",
-                gap: 1.5,
-                verticalAlign: "middle",
-            }}
-        >
-            {skills.map((s) => (
-                <Tooltip title={s.name} key={s.name} arrow>
-                    <Box
+        <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" role="list" aria-label="사용 기술">
+            {skills.map((skill) => (
+                <Tooltip title={skill.name} key={skill.name} arrow>
+                    <Chip
                         role="listitem"
-                        aria-label={s.name}
+                        icon={<Icon icon={skill.icon} color={skill.color} width={16} height={16} />}
+                        label={skill.name}
+                        size="small"
                         sx={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            p: 0.5,
-                            borderRadius: 2,
-                            transition: "transform .2s",
-                            "&:hover": { transform: "scale(1.1)" },
+                            borderRadius: 1.25,
+                            backgroundColor: alpha("#ffffff", 0.8),
+                            border: "1px solid",
+                            borderColor: alpha("#0f766e", 0.14),
+                            "& .MuiChip-icon": {ml: 0.75},
                         }}
-                    >
-                        <Icon icon={s.icon} color={s.color} width={28} height={28} />
-                    </Box>
+                    />
                 </Tooltip>
             ))}
-        </Box>
+        </Stack>
     );
 }
 
-// ✅ 경력 카드
-function CareerCard({
-                        item,
-                        showDivider,
-                    }: {
-    item: CareerItem;
-    showDivider?: boolean;
-}) {
+function CareerCard({item, index}: {item: CareerItem; index: number}) {
     return (
-        <Box>
-            <Typography variant="h6" fontWeight="bold">
-                {item.company}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
-                {item.period} | {item.role}
-            </Typography>
-            {/* 기술 아이콘 행 */}
-            <Box sx={{ mt: 1 }}>
+        <Box
+            sx={{
+                display: "grid",
+                gridTemplateColumns: {xs: "1fr", md: "180px 1fr"},
+                gap: {xs: 1.5, md: 3},
+                p: {xs: 2.25, md: 3},
+                borderRadius: 2,
+                border: "1px solid",
+                borderColor: alpha("#0f766e", 0.16),
+                backgroundColor: alpha("#fffaf3", 0.92),
+            }}
+        >
+            <Stack spacing={1}>
+                <Chip
+                    label={`0${index + 1}`}
+                    sx={{
+                        width: 54,
+                        borderRadius: 1.5,
+                        backgroundColor: alpha(index % 2 === 0 ? "#0f766e" : "#e76f51", 0.14),
+                        color: index % 2 === 0 ? "#0f766e" : "#a8432d",
+                    }}
+                />
+                <Typography variant="body2" color="text.secondary" fontWeight={800}>
+                    {item.period}
+                </Typography>
                 <SkillsRow skills={item.skills} />
-            </Box>
+            </Stack>
 
-            {/* 활동 내역 */}
-            <Box sx={{ mt: 1.5 }}>
-                {item.highlights.map((h, i) => (
-                    <Typography
-                        key={i}
-                        variant="body2"
-                        sx={{
-                            pl: 1.2,
-                            position: "relative",
-                            lineHeight: 1.7,
-                            "&:before": { content: '"•"', position: "absolute", left: 0 },
-                        }}
-                    >
-                        {h}
+            <Stack spacing={1.5}>
+                <Box>
+                    <Typography variant="h5" fontWeight={950}>
+                        {item.company}
                     </Typography>
-                ))}
-            </Box>
+                    <Typography color="text.secondary" fontWeight={700}>
+                        {item.role}
+                    </Typography>
+                </Box>
 
-            {showDivider && <Divider sx={{ mt: 2.5 }} />}
+                <Divider />
+
+                <Stack spacing={1}>
+                    {item.highlights.map((highlight) => (
+                        <Stack key={highlight} direction="row" spacing={1.25} alignItems="flex-start">
+                            <Icon icon="mdi:arrow-right-circle" width={20} height={20} color="#0f766e" />
+                            <Typography sx={{lineHeight: 1.75, color: "text.secondary"}}>
+                                {highlight}
+                            </Typography>
+                        </Stack>
+                    ))}
+                </Stack>
+            </Stack>
         </Box>
     );
 }
 
-// ✅ 메인 컴포넌트
 export default function Career({
-                                   data = careerData,
-                                   totalLabel = "총 경력",
-                                   totalText,
-                               }: {
+    data = careerData,
+    totalLabel = "총 경력",
+    totalText = "백엔드, 클라이언트, 운영 자동화까지 연결해 온 실무 경험",
+}: {
     data?: CareerItem[];
     totalLabel?: string;
     totalText?: string;
 }) {
     return (
-        <Box sx={{ p: { xs: 2, md: 3 } }}>
-            <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
-                <CardHeader
-                    title="Personal History"
-                    subheader={totalText ? `${totalLabel} : ${totalText}` : undefined}
-                    sx={{
-                        "& .MuiCardHeader-title": { fontWeight: "bold", fontSize: "1.25rem" },
-                        "& .MuiCardHeader-subheader": { color: "text.secondary" },
-                    }}
-                />
-                <CardContent>
-                    <Stack spacing={3}>
-                        {data.map((item, idx) => (
-                            <CareerCard
-                                key={`${item.company}-${item.period}`}
-                                item={item}
-                                showDivider={idx < data.length - 1}
-                            />
-                        ))}
-                    </Stack>
-                </CardContent>
-            </Card>
-        </Box>
+        <Stack spacing={2.5}>
+            <Box>
+                <Typography variant="overline" color="primary" fontWeight={900}>
+                    Career
+                </Typography>
+                <Typography variant="h4" fontWeight={950} sx={{mt: 0.5}}>
+                    문제를 제품으로 연결한 경력
+                </Typography>
+                <Typography color="text.secondary" sx={{mt: 1, maxWidth: 760}}>
+                    {totalLabel} : {totalText}
+                </Typography>
+            </Box>
+
+            <Stack spacing={2}>
+                {data.map((item, index) => (
+                    <CareerCard key={`${item.company}-${item.period}`} item={item} index={index} />
+                ))}
+            </Stack>
+        </Stack>
     );
 }

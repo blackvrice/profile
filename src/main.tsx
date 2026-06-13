@@ -1,10 +1,10 @@
-// main.tsx (또는 App 루트)
-import { createRoot } from 'react-dom/client';
-import App from './App';
-import { HelmetProvider } from 'react-helmet-async';
+import {createRoot} from "react-dom/client";
+import {HelmetProvider} from "react-helmet-async";
+import App from "./App";
+import "./index.css";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
     <HelmetProvider>
         <App />
-    </HelmetProvider>
+    </HelmetProvider>,
 );

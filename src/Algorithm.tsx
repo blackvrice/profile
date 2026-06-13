@@ -1,245 +1,114 @@
-// AlgorithmCardsExpandable.tsx
-import { useEffect, useState, useCallback } from "react";
-import {
-    Box,
-    Stack,
-    Typography,
-    Chip,
-    Card,
-    CardContent,
-    Avatar,
-    Divider,
-    Skeleton,
-    Collapse,
-    CardActionArea,
-} from "@mui/material";
+import {alpha, Box, Button, Chip, Divider, Stack, Typography} from "@mui/material";
+import {Icon} from "@iconify/react";
 
-/** ---------- 공통 표시용 타입 ---------- */
-type AlgoProfile = {
-    provider: "baekjoon" | "programmers";
-    handle: string;
-    avatar?: string;
-    tierText?: string;     // Baekjoon: 티어명, Programmers: Level n
-    rating?: number;       // Baekjoon: rating, Programmers: score
-    solvedCount?: number;
-    rank?: number;
-};
-
-/** ---------- Baekjoon(solved.ac) ---------- */
-type SolvedUser = {
-    handle: string;
-    tier: number;           // 0~30
-    rating: number;
-    solvedCount: number;
-    rank?: number;
-    profileImageUrl?: string;
-};
-
-const BAKEJOON_TIER_NAMES = [
-    "Unrated",
-    "Bronze V","Bronze IV","Bronze III","Bronze II","Bronze I",
-    "Silver V","Silver IV","Silver III","Silver II","Silver I",
-    "Gold V","Gold IV","Gold III","Gold II","Gold I",
-    "Platinum V","Platinum IV","Platinum III","Platinum II","Platinum I",
-    "Diamond V","Diamond IV","Diamond III","Diamond II","Diamond I",
-    "Ruby V","Ruby IV","Ruby III","Ruby II","Ruby I",
+const profiles = [
+    {
+        label: "Baekjoon",
+        handle: "blackvrice",
+        href: "https://solved.ac/profile/blackvrice",
+        icon: "simple-icons:baekjoon",
+        color: "#0076c0",
+        points: ["문제 해결 루틴 유지", "자료구조와 그래프 중심 학습", "C++ 풀이 경험 축적"],
+    },
+    {
+        label: "Programmers",
+        handle: "blackvrice",
+        href: "https://school.programmers.co.kr/",
+        icon: "mdi:code-json",
+        color: "#0f766e",
+        points: ["실무형 코딩 테스트 유형 정리", "SQL 및 구현 문제 반복", "풀이 과정 기록"],
+    },
 ];
 
-async function fetchBaekjoon(handle: string): Promise<AlgoProfile> {
-    const res = await fetch(`/solved/api/v3/user/show?handle=${encodeURIComponent(handle)}`);
-    if (!res.ok) throw new Error(`solved.ac error: ${res.status}`);
-    const u: SolvedUser = await res.json();
-    return {
-        provider: "baekjoon",
-        handle: u.handle,
-        avatar: u.profileImageUrl,
-        tierText: BAKEJOON_TIER_NAMES[u.tier] ?? `Tier ${u.tier}`,
-        rating: u.rating,
-        solvedCount: u.solvedCount,
-        rank: u.rank,
-    };
-}
-
-/** ---------- Programmers (프록시 필요) ---------- */
-type ProgrammersUser = {
-    handle: string;
-    level?: number;
-    score?: number;
-    solvedCount?: number;
-    rank?: number;
-    avatarUrl?: string;
-};
-
-async function fetchProgrammers(handle: string): Promise<AlgoProfile> {
-    const res = await fetch(`/programmers/api/user?handle=${encodeURIComponent(handle)}`);
-    if (!res.ok) throw new Error(`programmers error: ${res.status}`);
-    const u: ProgrammersUser = await res.json();
-    return {
-        provider: "programmers",
-        handle: u.handle,
-        avatar: u.avatarUrl,
-        tierText: u.level != null ? `Level ${u.level}` : undefined,
-        rating: u.score,
-        solvedCount: u.solvedCount,
-        rank: u.rank,
-    };
-}
-
-/** ---------- 공통 UI 조각 ---------- */
-function ProfileBody({ p }: { p: AlgoProfile }) {
+export default function AlgorithmCardsExpandable() {
     return (
-        <Stack spacing={1}>
-            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                {p.tierText && <Chip size="small" label={p.tierText} />}
-                {p.rating != null && (
-                    <Typography variant="body2">
-                        {p.provider === "baekjoon" ? "rating" : "score"}: {p.rating}
-                    </Typography>
-                )}
-                {p.solvedCount != null && (
-                    <Typography variant="body2">solved: {p.solvedCount}</Typography>
-                )}
-                {p.rank != null && <Typography variant="body2">rank: #{p.rank}</Typography>}
-            </Stack>
-        </Stack>
-    );
-}
+        <Stack spacing={2.5}>
+            <Box>
+                <Typography variant="overline" color="primary" fontWeight={900}>
+                    Algorithm
+                </Typography>
+                <Typography variant="h4" fontWeight={950} sx={{mt: 0.5}}>
+                    문제 해결력을 꾸준히 다지는 공간
+                </Typography>
+                <Typography color="text.secondary" sx={{mt: 1, maxWidth: 760}}>
+                    코딩 테스트 대비뿐 아니라, 구현을 더 단단하게 만드는 사고 훈련으로 알고리즘 문제를 정리하고 있습니다.
+                </Typography>
+            </Box>
 
-function LoadingBody() {
-    return (
-        <Stack direction="row" spacing={2} alignItems="center">
-            <Skeleton variant="circular" width={36} height={36} />
-            <Stack spacing={1} sx={{ flex: 1 }}>
-                <Skeleton variant="text" width={160} />
-                <Skeleton variant="rectangular" width="100%" height={20} />
-            </Stack>
-        </Stack>
-    );
-}
-
-function ErrorBody({ message }: { message: string }) {
-    return <Typography color="error">에러: {message}</Typography>;
-}
-
-/** ---------- 확장 가능한 카드 ---------- */
-function ExpandableAlgoCard({
-                                label,
-                                subtitle,
-                                avatarFallback,
-                                onLoad,
-                            }: {
-    label: "Baekjoon" | "Programmers";
-    subtitle: string;          // 핸들이나 간단 설명
-    avatarFallback: string;    // 아바타 없을 때 한 글자
-    onLoad: () => Promise<AlgoProfile>;
-}) {
-    const [expanded, setExpanded] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [profile, setProfile] = useState<AlgoProfile | null>(null);
-    const [err, setErr] = useState<string | null>(null);
-
-    const toggle = useCallback(() => setExpanded((v) => !v), []);
-    // 펼칠 때 처음 한 번만 로드
-    useEffect(() => {
-        let cancel = false;
-        (async () => {
-            if (!expanded || profile || loading) return;
-            setLoading(true);
-            setErr(null);
-            try {
-                const p = await onLoad();
-                if (!cancel) setProfile(p);
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            } catch (e : unknown) {
-                if (!cancel) {
-                    setErr("알 수 없는 오류");
-                }
-            } finally {
-                if (!cancel) setLoading(false);
-            }
-        })();
-        return () => { cancel = true; };
-    }, [expanded, onLoad, profile, loading]);
-
-    return (
-        <Card variant="outlined" sx={{ overflow: "hidden" }}>
-            <CardActionArea onClick={toggle} aria-expanded={expanded} sx={{ p: 2 }}>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar sx={{ width: 40, height: 40 }}>
-                        {avatarFallback.toUpperCase()}
-                    </Avatar>
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography variant="subtitle1" fontWeight={700}>
-                            {label}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" noWrap>
-                            {subtitle}
-                        </Typography>
-                    </Box>
-                </Stack>
-            </CardActionArea>
-
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <Divider />
-                <CardContent>
-                    {loading && <LoadingBody />}
-                    {!loading && err && <ErrorBody message={err} />}
-                    {!loading && !err && profile && (
-                        <Stack direction="row" spacing={2} alignItems="flex-start">
-                            <Avatar src={profile.avatar} alt={profile.handle} sx={{ width: 48, height: 48 }}>
-                                {profile.handle?.[0]?.toUpperCase()}
-                            </Avatar>
-                            <Box sx={{ flex: 1 }}>
-                                <Typography variant="h6">
-                                    @{profile.handle}{" "}
-                                    <Chip
-                                        size="small"
-                                        label={profile.provider === "baekjoon" ? "Baekjoon" : "Programmers"}
-                                        sx={{ ml: 0.5 }}
-                                    />
-                                </Typography>
-                                <Box mt={1}>
-                                    <ProfileBody p={profile} />
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {xs: "1fr", md: "repeat(2, minmax(0, 1fr))"},
+                    gap: 2,
+                }}
+            >
+                {profiles.map((profile) => (
+                    <Box
+                        key={profile.label}
+                        sx={{
+                            borderRadius: 2,
+                            border: "1px solid",
+                            borderColor: alpha("#0f766e", 0.16),
+                            backgroundColor: alpha("#fffaf3", 0.92),
+                            p: {xs: 2.25, md: 3},
+                        }}
+                    >
+                        <Stack spacing={2}>
+                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                <Box
+                                    sx={{
+                                        width: 48,
+                                        height: 48,
+                                        borderRadius: 1.5,
+                                        display: "grid",
+                                        placeItems: "center",
+                                        backgroundColor: alpha(profile.color, 0.12),
+                                        color: profile.color,
+                                    }}
+                                >
+                                    <Icon icon={profile.icon} width={25} height={25} />
                                 </Box>
-                            </Box>
+                                <Box sx={{minWidth: 0}}>
+                                    <Typography variant="h6" fontWeight={950}>
+                                        {profile.label}
+                                    </Typography>
+                                    <Typography color="text.secondary">@{profile.handle}</Typography>
+                                </Box>
+                            </Stack>
+
+                            <Divider />
+
+                            <Stack spacing={1}>
+                                {profile.points.map((point) => (
+                                    <Stack key={point} direction="row" spacing={1} alignItems="center">
+                                        <Icon icon="mdi:check" width={18} height={18} color={profile.color} />
+                                        <Typography color="text.secondary">{point}</Typography>
+                                    </Stack>
+                                ))}
+                            </Stack>
+
+                            <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                                <Chip
+                                    label="Learning Log"
+                                    size="small"
+                                    sx={{
+                                        borderRadius: 1.25,
+                                        backgroundColor: alpha(profile.color, 0.1),
+                                        color: profile.color,
+                                    }}
+                                />
+                                <Button
+                                    variant="text"
+                                    endIcon={<Icon icon="mdi:open-in-new" width={18} />}
+                                    onClick={() => window.open(profile.href, "_blank", "noopener,noreferrer")}
+                                >
+                                    방문하기
+                                </Button>
+                            </Stack>
                         </Stack>
-                    )}
-                </CardContent>
-            </Collapse>
-        </Card>
-    );
-}
-
-/** ---------- 메인: 카드 클릭-펼침 레이아웃 ---------- */
-export default function AlgorithmCardsExpandable({
-                                                     baekjoonHandle = "blackvrice",
-                                                     programmersHandle = "blackvrice",
-                                                 }: {
-    baekjoonHandle?: string;
-    programmersHandle?: string;
-}) {
-    return (
-        <Box p={2}>
-            <Stack spacing={2}>
-                <ExpandableAlgoCard
-                    label="Baekjoon"
-                    subtitle={`@${baekjoonHandle}`}
-                    avatarFallback="B"
-                    onLoad={() => fetchBaekjoon(baekjoonHandle)}
-                />
-
-                <ExpandableAlgoCard
-                    label="Programmers"
-                    subtitle={`@${programmersHandle}`}
-                    avatarFallback="P"
-                    onLoad={() => fetchProgrammers(programmersHandle)}
-                />
-            </Stack>
-
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="body2" color="text.secondary">
-                카드를 클릭하면 상세 정보가 펼쳐지고, 그 시점에만 데이터를 가져옵니다.
-            </Typography>
-        </Box>
+                    </Box>
+                ))}
+            </Box>
+        </Stack>
     );
 }

@@ -1,152 +1,155 @@
-import {Box, Card, CardHeader, CardContent, Stack, Tooltip, IconButton, Typography, Divider, Chip} from '@mui/material'
+import {alpha, Box, Button, Chip, Divider, Stack, Typography} from "@mui/material";
 import {Icon} from "@iconify/react";
 import type {ReactNode} from "react";
 
 type SectionProps = {
     name: string;
-    image?: string;
+    category: string;
+    summary: string;
     youtubeUrl?: string;
     githubUrl?: string;
     children?: ReactNode;
 };
 
-export function Section({
-                            name,
-                            image,
-                            youtubeUrl,
-                            githubUrl,
-                            children,
-                        }: SectionProps) {
+function Section({name, category, summary, youtubeUrl, githubUrl, children}: SectionProps) {
     return (
-        <Card sx={{ borderRadius: 2 }}>
-            <CardHeader title={`Project : ${name}`} />
-
-            <CardContent>
-                <Stack spacing={2}>
-                    {/* Project Image */}
-                    {image && (
-                        <Box
-                            component="img"
-                            src={image}
-                            alt={name}
+        <Box
+            sx={{
+                borderRadius: 2,
+                border: "1px solid",
+                borderColor: alpha("#0f766e", 0.16),
+                backgroundColor: alpha("#fffaf3", 0.92),
+                p: {xs: 2.25, md: 3},
+            }}
+        >
+            <Stack spacing={2}>
+                <Stack
+                    direction={{xs: "column", md: "row"}}
+                    spacing={2}
+                    justifyContent="space-between"
+                    alignItems={{xs: "flex-start", md: "center"}}
+                >
+                    <Box>
+                        <Chip
+                            label={category}
+                            size="small"
                             sx={{
-                                width: "100%",
-                                maxHeight: 180,
-                                objectFit: "cover",
-                                borderRadius: 2,
+                                borderRadius: 1.25,
+                                backgroundColor: alpha("#e76f51", 0.12),
+                                color: "#a8432d",
                             }}
                         />
-                    )}
-                    {children}
-                    {/* Action Buttons */}
-                    <Stack direction="row" spacing={1}>
-                        {youtubeUrl && (
-                            <Tooltip title="YouTube" arrow>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => window.open(youtubeUrl, "_blank")}
-                                    sx={{ borderRadius: 2 }}
-                                >
-                                    <Icon icon="logos:youtube-icon" width={20} height={20} />
-                                </IconButton>
-                            </Tooltip>
-                        )}
+                        <Typography variant="h5" fontWeight={950} sx={{mt: 1}}>
+                            {name}
+                        </Typography>
+                        <Typography color="text.secondary" sx={{mt: 0.75, maxWidth: 720}}>
+                            {summary}
+                        </Typography>
+                    </Box>
 
+                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                        {youtubeUrl && (
+                            <Button
+                                variant="outlined"
+                                startIcon={<Icon icon="mdi:youtube" width={19} />}
+                                onClick={() => window.open(youtubeUrl, "_blank", "noopener,noreferrer")}
+                            >
+                                Demo
+                            </Button>
+                        )}
                         {githubUrl && (
-                            <Tooltip title="GitHub" arrow>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => window.open(githubUrl, "_blank")}
-                                    sx={{ borderRadius: 2 }}
-                                >
-                                    <Icon icon="logos:github-icon" width={20} height={20} />
-                                </IconButton>
-                            </Tooltip>
+                            <Button
+                                variant="contained"
+                                startIcon={<Icon icon="mdi:github" width={19} />}
+                                onClick={() => window.open(githubUrl, "_blank", "noopener,noreferrer")}
+                            >
+                                GitHub
+                            </Button>
                         )}
                     </Stack>
                 </Stack>
-            </CardContent>
-        </Card>
+
+                <Divider />
+                {children}
+            </Stack>
+        </Box>
+    );
+}
+
+function TagGroup({title, tags}: {title: string; tags: string[]}) {
+    return (
+        <Stack spacing={1}>
+            <Typography variant="subtitle2" color="text.secondary" fontWeight={900}>
+                {title}
+            </Typography>
+            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                {tags.map((tag) => (
+                    <Chip
+                        key={tag}
+                        label={tag}
+                        size="small"
+                        sx={{
+                            borderRadius: 1.25,
+                            backgroundColor: alpha("#0f766e", 0.09),
+                            color: "#0b4f4a",
+                        }}
+                    />
+                ))}
+            </Stack>
+        </Stack>
     );
 }
 
 export default function Project() {
     return (
-        <Box
-        >
-            <Stack spacing={4}>
-                {/* RTS */}
-                <Section
-                    name="RTS"
-                    youtubeUrl="https://www.youtube.com/"
-                    githubUrl="https://github.com/blackvrice/rts"
-                >
-                    <Stack spacing={2}>
-                        <Typography variant="body1">
-                            자체 제작 엔진 기반의 RTS 게임으로,
-                            ECS 구조와 Manager 패턴을 활용한 아키텍처 설계를 목표로 개발.
-                        </Typography>
+        <Stack spacing={2.5}>
+            <Box>
+                <Typography variant="overline" color="primary" fontWeight={900}>
+                    Project
+                </Typography>
+                <Typography variant="h4" fontWeight={950} sx={{mt: 0.5}}>
+                    직접 설계하고 구현한 작업들
+                </Typography>
+                <Typography color="text.secondary" sx={{mt: 1, maxWidth: 760}}>
+                    게임 구조, 데이터 중심 설계, 데스크톱/웹 제품화를 중심으로 프로젝트를 쌓고 있습니다.
+                </Typography>
+            </Box>
 
-                        <Divider />
+            <Section
+                name="RTS Game Engine"
+                category="C++ Game Project"
+                youtubeUrl="https://www.youtube.com/"
+                githubUrl="https://github.com/blackvrice/rts"
+                summary="자체 제작 엔진 기반의 RTS 게임 프로젝트입니다. ECS 구조와 Manager 패턴을 활용해 명령, 선택, 렌더링, 게임 로직을 분리하는 방향으로 설계했습니다."
+            >
+                <Stack spacing={2}>
+                    <TagGroup title="주요 기술" tags={["C++", "SFML", "Custom Engine", "RTS Game"]} />
+                    <TagGroup
+                        title="적용 패턴"
+                        tags={["Command", "Observer", "Factory", "Dependency Injection", "Manager", "Scene", "State", "ECS"]}
+                    />
+                </Stack>
+            </Section>
 
-                        <Stack spacing={1}>
-                            <Typography variant="subtitle2" color="text.secondary">
-                                사용 기술
-                            </Typography>
+            <Section
+                name="RPG Project"
+                category="Unity Game Project"
+                githubUrl=""
+                summary="Unity 기반으로 개발 중인 RPG 프로젝트입니다. ScriptableObject와 데이터 중심 설계를 활용해 캐릭터 성장, 스킬, 아이템 시스템을 확장 가능한 구조로 구성하고 있습니다."
+            >
+                <TagGroup
+                    title="주요 기술"
+                    tags={["Unity", "C#", "ScriptableObject", "Data-Driven", "Game Logic", "In Progress"]}
+                />
+            </Section>
 
-                            <Stack direction="row" spacing={1} flexWrap="wrap">
-                                <Chip label="C++" />
-                                <Chip label="SFML" />
-                                <Chip label="Custom Engine" />
-                                <Chip label="RTS Game" />
-                            </Stack>
-                        </Stack>
-
-                        <Stack spacing={1}>
-                            <Typography variant="subtitle2" color="text.secondary">
-                                적용 디자인 패턴
-                            </Typography>
-
-                            <Stack direction="row" spacing={1} flexWrap="wrap">
-                                <Chip label="Command" />
-                                <Chip label="Observer" />
-                                <Chip label="Factory" />
-                                <Chip label="Dependency Injection" />
-                                <Chip label="Manager" />
-                                <Chip label="Scene" />
-                                <Chip label="State" />
-                                <Chip label="ECS 아키텍처" />
-                            </Stack>
-                        </Stack>
-                    </Stack>
-                </Section>
-
-
-                {/* RPG */}
-                <Section
-                    name="RPG"
-                    youtubeUrl="https://www.youtube.com/"
-                    githubUrl=""
-                >
-                    <Stack spacing={2}>
-                        <Typography variant="body1" color="text.secondary">
-                            Unity 엔진 기반으로 개발 중인 RPG 프로젝트.
-                            ScriptableObject와 데이터 중심 설계를 통해
-                            캐릭터 성장, 스킬, 아이템 시스템을 구조화하여 구현 중.
-                        </Typography>
-
-                        <Stack direction="row" spacing={1} flexWrap="wrap">
-                            <Chip label="Unity" />
-                            <Chip label="C#" />
-                            <Chip label="ScriptableObject" />
-                            <Chip label="Data-Driven" />
-                            <Chip label="Game Logic" />
-                            <Chip label="In Progress" color="warning" />
-                        </Stack>
-                    </Stack>
-                </Section>
-
-            </Stack>
-        </Box>
+            <Section
+                name="Desktop Data Tool"
+                category="Product Engineering"
+                summary="WPF, WebSocket, MySQL을 활용한 실시간 데이터 분석 및 시각화 도구 개발 경험을 바탕으로 한 제품형 클라이언트 작업입니다."
+            >
+                <TagGroup title="관심 영역" tags={["WPF", "MVVM", "WebSocket", "LiveChartsCore", "MySQL", "Automation"]} />
+            </Section>
+        </Stack>
     );
 }
