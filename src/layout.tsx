@@ -148,8 +148,8 @@ export default function Hero() {
     const downloadVCard = () => {
         const vcard = `BEGIN:VCARD
 VERSION:3.0
-N:Cho;Seongsik;;;
-FN:조성식
+N:Oh;Seongsik;;;
+FN:오성식
 TEL;TYPE=CELL:010-6226-9366
 EMAIL;TYPE=INTERNET:blackvrice@naver.com
 ADR;TYPE=HOME:;;Seoul;;;Republic of Korea
@@ -159,7 +159,7 @@ END:VCARD`;
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "Seongsik_Cho.vcf";
+        a.download = "Seongsik_Oh.vcf";
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -177,16 +177,16 @@ END:VCARD`;
             }}
         >
             <Helmet>
-                <title>조성식 | Software Engineer Profile</title>
+                <title>오성식 | Software Engineer Profile</title>
                 <meta
                     name="description"
-                    content="조성식의 소프트웨어 엔지니어 프로필, 경력, 프로젝트, 알고리즘 활동을 정리한 포트폴리오입니다."
+                    content="오성식의 소프트웨어 엔지니어 프로필, 경력, 프로젝트, 알고리즘 활동을 정리한 포트폴리오입니다."
                 />
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",
                         "@type": "Person",
-                        name: "조성식",
+                        name: "오성식",
                         email: "mailto:blackvrice@naver.com",
                         url: "https://github.com/blackvrice",
                         sameAs: [
@@ -240,7 +240,7 @@ END:VCARD`;
                                 letterSpacing: 0,
                             }}
                         >
-                            조성식
+                            오성식
                         </Typography>
                         <Typography
                             sx={{
@@ -339,7 +339,7 @@ END:VCARD`;
                         <Box
                             component="img"
                             src={image}
-                            alt="조성식 프로필 사진"
+                            alt="오성식 프로필 사진"
                             loading="eager"
                             decoding="async"
                             sx={{
