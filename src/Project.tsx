@@ -104,7 +104,7 @@ export default function Project() {
             <Section
                 name="GameEngine 프로젝트"
                 category="C++ Game Engine"
-                githubUrl="http://github.com/blackvrice?tab=repositories"
+                githubUrl="https://github.com/blackvrice/GameEngine"
                 summary="C++ 기반으로 게임 루프, 렌더링, 입력, 씬 전환, 객체 관리 구조를 직접 구성하며 엔진 구조를 학습하고 확장하는 프로젝트입니다."
             >
                 <Stack spacing={2}>
