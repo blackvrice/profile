@@ -22,15 +22,37 @@ type Skill = {
     color?: string;
 };
 
-const skills: Skill[] = [
-    {name: "C#", icon: "devicon:csharp", color: "#68217A"},
-    {name: "WPF", icon: "mdi:microsoft-windows", color: "#0078D4"},
-    {name: "Java", icon: "devicon:java", color: "#007396"},
-    {name: "Spring Boot", icon: "devicon:spring", color: "#6DB33F"},
-    {name: "Kotlin", icon: "devicon:kotlin", color: "#7F52FF"},
-    {name: "React", icon: "devicon:react", color: "#087ea4"},
-    {name: "TypeScript", icon: "devicon:typescript", color: "#3178C6"},
-    {name: "MySQL", icon: "devicon:mysql", color: "#4479A1"},
+type SkillGroup = {
+    title: string;
+    accent: string;
+    items: Skill[];
+};
+
+const skillGroups: SkillGroup[] = [
+    {
+        title: "게임 클라이언트",
+        accent: "#0f766e",
+        items: [
+            {name: "C++23", icon: "logos:c-plusplus", color: "#00599c"},
+            {name: "C#", icon: "devicon:csharp", color: "#68217A"},
+            {name: "Unreal Engine 5", icon: "simple-icons:unrealengine", color: "#313131"},
+            {name: "Unity 6", icon: "simple-icons:unity", color: "#222c37"},
+            {name: "SFML / OpenGL", icon: "mdi:cube-outline", color: "#0f766e"},
+            {name: "CMake", icon: "simple-icons:cmake", color: "#064f8c"},
+        ],
+    },
+    {
+        title: "실무 개발",
+        accent: "#e76f51",
+        items: [
+            {name: "WPF / .NET 8", icon: "logos:dotnet", color: "#512bd4"},
+            {name: "Java / Spring", icon: "devicon:spring", color: "#6DB33F"},
+            {name: "TypeScript", icon: "devicon:typescript", color: "#3178C6"},
+            {name: "React", icon: "devicon:react", color: "#087ea4"},
+            {name: "Oracle / PostgreSQL", icon: "logos:postgresql", color: "#336791"},
+            {name: "Git", icon: "logos:git-icon"},
+        ],
+    },
 ];
 
 const links = [
@@ -42,34 +64,56 @@ const links = [
 
 function SkillsRow() {
     return (
-        <Box
-            role="list"
-            aria-label="주요 기술 스택"
-            sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 1,
-            }}
-        >
-            {skills.map((skill) => (
-                <Tooltip title={skill.name} key={skill.name} arrow>
-                    <Chip
-                        role="listitem"
-                        icon={<Icon icon={skill.icon} color={skill.color} width={18} height={18} />}
-                        label={skill.name}
+        <Stack spacing={1.25}>
+            {skillGroups.map((group) => (
+                <Stack
+                    key={group.title}
+                    direction={{xs: "column", sm: "row"}}
+                    spacing={{xs: 0.75, sm: 1.25}}
+                    alignItems={{xs: "flex-start", sm: "center"}}
+                >
+                    <Typography
+                        variant="caption"
+                        fontWeight={900}
                         sx={{
-                            height: 36,
-                            borderRadius: 1.5,
-                            backgroundColor: alpha("#ffffff", 0.78),
-                            border: "1px solid",
-                            borderColor: alpha("#0f766e", 0.16),
-                            color: "text.primary",
-                            "& .MuiChip-icon": {ml: 1},
+                            color: group.accent,
+                            minWidth: 92,
+                            flexShrink: 0,
+                            letterSpacing: 0.2,
                         }}
-                    />
-                </Tooltip>
+                    >
+                        {group.title}
+                    </Typography>
+                    <Box
+                        role="list"
+                        aria-label={`${group.title} 기술 스택`}
+                        sx={{display: "flex", flexWrap: "wrap", gap: 0.75}}
+                    >
+                        {group.items.map((skill) => (
+                            <Tooltip title={skill.name} key={skill.name} arrow>
+                                <Chip
+                                    role="listitem"
+                                    icon={
+                                        <Icon icon={skill.icon} color={skill.color} width={17} height={17} />
+                                    }
+                                    label={skill.name}
+                                    sx={{
+                                        height: 33,
+                                        borderRadius: 1.5,
+                                        backgroundColor: alpha("#ffffff", 0.78),
+                                        border: "1px solid",
+                                        borderColor: alpha(group.accent, 0.18),
+                                        color: "text.primary",
+                                        fontWeight: 700,
+                                        "& .MuiChip-icon": {ml: 1},
+                                    }}
+                                />
+                            </Tooltip>
+                        ))}
+                    </Box>
+                </Stack>
             ))}
-        </Box>
+        </Stack>
     );
 }
 
@@ -150,6 +194,7 @@ export default function Hero() {
 VERSION:3.0
 N:Oh;Seongsik;;;
 FN:오성식
+TITLE:Game Client Programmer
 TEL;TYPE=CELL:010-6226-9366
 EMAIL;TYPE=INTERNET:blackvrice@naver.com
 ADR;TYPE=HOME:;;Seoul;;;Republic of Korea
@@ -177,11 +222,18 @@ END:VCARD`;
             }}
         >
             <Helmet>
-                <title>오성식 | Software Engineer Profile</title>
+                <html lang="ko" />
+                <title>오성식 | Game Client Programmer</title>
                 <meta
                     name="description"
-                    content="오성식의 소프트웨어 엔지니어 프로필, 경력, 프로젝트, 알고리즘 활동을 정리한 포트폴리오입니다."
+                    content="게임 규칙을 구조화하고 끝까지 검증하는 개발자. C++·C#·Unreal Engine·Unity 기반 게임 클라이언트 프로젝트와 4년의 소프트웨어 개발 실무 경력을 정리한 포트폴리오입니다."
                 />
+                <meta property="og:title" content="오성식 | Game Client Programmer" />
+                <meta
+                    property="og:description"
+                    content="RTS(C++23) · Tycoon(Unity 6) · ArenaShooter(UE5.6) 프로젝트와 장비 제어 실무로 증명한 상태·비동기·검증 역량."
+                />
+                <meta property="og:type" content="profile" />
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",
@@ -194,7 +246,15 @@ END:VCARD`;
                             "https://blackvrice.tistory.com",
                             "https://velog.io/@blackvrice/posts",
                         ],
-                        jobTitle: "Software Engineer",
+                        jobTitle: "Game Client Programmer",
+                        knowsAbout: [
+                            "C++",
+                            "C#",
+                            "Unreal Engine",
+                            "Unity",
+                            "Game System Design",
+                            "WPF",
+                        ],
                         address: {
                             "@type": "PostalAddress",
                             addressLocality: "Seoul",
@@ -211,22 +271,35 @@ END:VCARD`;
                 sx={{p: {xs: 2.5, sm: 3.5, md: 5}}}
             >
                 <Stack spacing={2.25} sx={{flex: 1, minWidth: 0}}>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                    <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                        <Chip
+                            icon={<Icon icon="mdi:gamepad-variant-outline" width={16} />}
+                            label="Game Client Programmer"
+                            sx={{
+                                borderRadius: 1.5,
+                                fontWeight: 800,
+                                backgroundColor: alpha("#0f766e", 0.14),
+                                color: "#0b4f4a",
+                                "& .MuiChip-icon": {color: "#0f766e"},
+                            }}
+                        />
+                        <Chip
+                            icon={<Icon icon="mdi:briefcase-search-outline" width={16} />}
+                            label="구직 중"
+                            sx={{
+                                borderRadius: 1.5,
+                                fontWeight: 800,
+                                backgroundColor: alpha("#e76f51", 0.12),
+                                color: "#a8432d",
+                                "& .MuiChip-icon": {color: "#e76f51"},
+                            }}
+                        />
                         <Chip
                             icon={<Icon icon="mdi:map-marker-outline" width={16} />}
                             label="Seoul, KR"
                             color="primary"
                             variant="outlined"
                             sx={{borderRadius: 1.5}}
-                        />
-                        <Chip
-                            icon={<Icon icon="mdi:briefcase-check-outline" width={16} />}
-                            label="Software Engineer"
-                            sx={{
-                                borderRadius: 1.5,
-                                backgroundColor: alpha("#e76f51", 0.12),
-                                color: "#a8432d",
-                            }}
                         />
                     </Stack>
 
@@ -245,14 +318,25 @@ END:VCARD`;
                         <Typography
                             sx={{
                                 mt: 1.5,
-                                maxWidth: 680,
-                                color: "text.secondary",
-                                fontSize: {xs: 16, md: 19},
-                                lineHeight: 1.7,
+                                fontSize: {xs: 18, md: 22},
+                                fontWeight: 900,
+                                color: "#0b4f4a",
                             }}
                         >
-                            백엔드와 클라이언트 개발을 함께 다루며, 실시간 데이터 처리와 제품형 UI를 안정적으로
-                            만드는 개발자입니다.
+                            게임 규칙을 구조화하고, 끝까지 검증하는 개발자
+                        </Typography>
+                        <Typography
+                            sx={{
+                                mt: 1,
+                                maxWidth: 700,
+                                color: "text.secondary",
+                                fontSize: {xs: 15, md: 17},
+                                lineHeight: 1.8,
+                            }}
+                        >
+                            C# 장비 제어 실무에서 다룬 상태·비동기·복구 경험을 C++ · Unity · Unreal 프로젝트의 게임
+                            루프와 플레이 시스템 설계로 확장했습니다. 웹 백엔드 실무에서 쌓은 데이터 처리와 성능
+                            개선 경험도 함께 가지고 있습니다.
                         </Typography>
                     </Box>
 
@@ -261,7 +345,7 @@ END:VCARD`;
                         spacing={1}
                         divider={<Divider orientation="vertical" flexItem />}
                         sx={{
-                            maxWidth: 560,
+                            maxWidth: 600,
                             p: 1.5,
                             borderRadius: 2,
                             backgroundColor: alpha("#ffffff", 0.68),
@@ -270,12 +354,13 @@ END:VCARD`;
                         }}
                     >
                         {[
-                            ["3년+", "실무 개발 경험"],
+                            ["4년", "실무 개발 경력"],
+                            ["3개", "게임 프로젝트"],
+                            ["2 + 2", "언어 2 · 엔진 2"],
                             [`${age}세`, "1997.02.23"],
-                            ["Full-stack", "WPF · Spring · React"],
                         ].map(([value, label]) => (
-                            <Box key={label} sx={{flex: 1}}>
-                                <Typography fontWeight={950} fontSize={20}>
+                            <Box key={label} sx={{flex: 1, minWidth: 0}}>
+                                <Typography fontWeight={950} fontSize={19}>
                                     {value}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
@@ -287,16 +372,22 @@ END:VCARD`;
 
                     <SkillsRow />
 
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                    <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                         <CopyChip label="010-6226-9366" value="010-6226-9366" icon="mdi:phone-outline" />
-                        <CopyChip label="blackvrice@naver.com" value="blackvrice@naver.com" icon="mdi:email-outline" />
+                        <CopyChip
+                            label="blackvrice@naver.com"
+                            value="blackvrice@naver.com"
+                            icon="mdi:email-outline"
+                        />
                     </Stack>
 
-                    <Stack direction="row" spacing={1.25} alignItems="center" flexWrap="wrap">
+                    <Stack direction="row" spacing={1.25} alignItems="center" useFlexGap flexWrap="wrap">
                         <Button
                             variant="contained"
                             startIcon={<Icon icon="mdi:github" width={19} />}
-                            onClick={() => window.open("https://github.com/blackvrice", "_blank", "noopener,noreferrer")}
+                            onClick={() =>
+                                window.open("https://github.com/blackvrice", "_blank", "noopener,noreferrer")
+                            }
                         >
                             GitHub 보기
                         </Button>

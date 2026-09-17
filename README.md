@@ -1,73 +1,42 @@
-# React + TypeScript + Vite
+# 오성식 · Game Client Programmer Profile
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+게임 규칙을 구조화하고, 끝까지 검증하는 개발자의 웹 포트폴리오입니다.
+React + TypeScript + Vite + MUI 로 만들었고, GitHub Actions 로 배포합니다.
 
-Currently, two official plugins are available:
+- 배포: https://profile.blackvrice.com
+- GitHub: https://github.com/blackvrice
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 구성
 
-## React Compiler
+| 탭 | 내용 |
+| --- | --- |
+| Project | RTS(C++23) · Tycoon(Unity 6) · ArenaShooter(UE 5.6) — 구현·검증 근거 |
+| Strength | 게임 클라이언트 요구 역량 ↔ 근거 매핑, 개발 원칙(STATE → BOUNDARY → VERIFY → EVIDENCE) |
+| Career | 앤서레이 · 노리시스템 · 위시정보기술 실무 경력 (상세 직무 펼쳐보기) |
+| Algorithm | 백준 / 프로그래머스 문제 해결 기록 |
+| Study | 학습 중인 기술 관심사 |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 내용 수정하기
 
-## Expanding the ESLint configuration
+문구와 데이터는 대부분 데이터 파일에 모여 있습니다.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| 파일 | 수정 대상 |
+| --- | --- |
+| `src/ProjectData.ts` | 프로젝트 목록, 수치, 기술 태그, **플레이 영상 URL(`videoUrl`)** |
+| `src/CareerData.ts` | 경력 기간, 직무, 상세 항목, 기술 스택 |
+| `src/Strength.tsx` | 역량 매핑 표(`fitRows`), 개발 원칙, 협업 태도 |
+| `src/layout.tsx` | 히어로 소개 문구, 스킬 그룹, 연락처, SEO 메타 |
+| `src/App.tsx` | 탭 구성, Study 항목 |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+> 프로젝트 카드의 "영상" 버튼은 `videoUrl` 이 비어 있으면 비활성 상태입니다.
+> YouTube 링크를 채우면 자동으로 활성화됩니다.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 개발
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev      # 로컬 개발 서버
+npm run build    # 타입 체크 + 프로덕션 빌드
+npm run lint     # ESLint
+npm run preview  # 빌드 결과 미리보기
 ```

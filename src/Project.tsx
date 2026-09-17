@@ -1,88 +1,228 @@
-import {alpha, Box, Button, Chip, Divider, Stack, Typography} from "@mui/material";
+import {alpha, Box, Button, Chip, Divider, Stack, Tooltip, Typography} from "@mui/material";
 import {Icon} from "@iconify/react";
-import type {ReactNode} from "react";
+import {projects, type ProjectItem} from "./ProjectData.ts";
 
-type SectionProps = {
-    name: string;
-    category: string;
-    summary: string;
-    githubUrl: string;
-    children?: ReactNode;
-};
+function StatRow({item}: {item: ProjectItem}) {
+    return (
+        <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
+            spacing={1.5}
+            sx={{
+                p: 1.5,
+                borderRadius: 2,
+                border: "1px solid",
+                borderColor: alpha(item.accent, 0.2),
+                backgroundColor: alpha(item.accent, 0.06),
+            }}
+        >
+            {item.stats.map((stat) => (
+                <Box key={stat.label} sx={{flex: 1, minWidth: 0}}>
+                    <Typography fontWeight={950} fontSize={{xs: 17, md: 19}} color={item.accent} noWrap>
+                        {stat.value}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" fontWeight={700}>
+                        {stat.label}
+                    </Typography>
+                </Box>
+            ))}
+        </Stack>
+    );
+}
 
-function Section({name, category, summary, githubUrl, children}: SectionProps) {
+function FlowRow({flow, accent}: {flow: string[]; accent: string}) {
+    return (
+        <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap" alignItems="center">
+            {flow.map((step, index) => (
+                <Stack key={step} direction="row" spacing={0.75} alignItems="center">
+                    <Chip
+                        label={step}
+                        size="small"
+                        sx={{
+                            borderRadius: 1.25,
+                            fontWeight: 700,
+                            backgroundColor: alpha("#ffffff", 0.85),
+                            border: "1px solid",
+                            borderColor: alpha(accent, 0.24),
+                            color: "text.primary",
+                        }}
+                    />
+                    {index < flow.length - 1 && (
+                        <Icon icon="mdi:chevron-right" width={16} height={16} color={alpha(accent, 0.6)} />
+                    )}
+                </Stack>
+            ))}
+        </Stack>
+    );
+}
+
+function ListBlock({
+    title,
+    icon,
+    items,
+    accent,
+}: {
+    title: string;
+    icon: string;
+    items: string[];
+    accent: string;
+}) {
+    return (
+        <Stack spacing={1}>
+            <Stack direction="row" spacing={0.75} alignItems="center">
+                <Icon icon={icon} width={18} height={18} color={accent} />
+                <Typography variant="subtitle2" fontWeight={900} color="text.secondary">
+                    {title}
+                </Typography>
+            </Stack>
+            <Stack spacing={0.75}>
+                {items.map((item) => (
+                    <Stack key={item} direction="row" spacing={1} alignItems="flex-start">
+                        <Box sx={{pt: "5px", flexShrink: 0}}>
+                            <Box sx={{width: 6, height: 6, borderRadius: "50%", backgroundColor: accent}} />
+                        </Box>
+                        <Typography variant="body2" sx={{lineHeight: 1.75, color: "text.secondary"}}>
+                            {item}
+                        </Typography>
+                    </Stack>
+                ))}
+            </Stack>
+        </Stack>
+    );
+}
+
+function ProjectCard({item}: {item: ProjectItem}) {
+    const hasVideo = Boolean(item.videoUrl);
+
     return (
         <Box
             sx={{
                 borderRadius: 2,
                 border: "1px solid",
-                borderColor: alpha("#0f766e", 0.16),
-                backgroundColor: alpha("#fffaf3", 0.92),
+                borderColor: alpha(item.accent, 0.22),
+                backgroundColor: alpha("#fffaf3", 0.93),
                 p: {xs: 2.25, md: 3},
             }}
         >
-            <Stack spacing={2}>
+            <Stack spacing={2.25}>
                 <Stack
                     direction={{xs: "column", md: "row"}}
                     spacing={2}
                     justifyContent="space-between"
-                    alignItems={{xs: "flex-start", md: "center"}}
+                    alignItems={{xs: "flex-start", md: "flex-start"}}
                 >
-                    <Box>
-                        <Chip
-                            label={category}
-                            size="small"
+                    <Stack direction="row" spacing={1.75} sx={{minWidth: 0}}>
+                        <Box
                             sx={{
-                                borderRadius: 1.25,
-                                backgroundColor: alpha("#e76f51", 0.12),
-                                color: "#a8432d",
+                                width: 48,
+                                height: 48,
+                                flexShrink: 0,
+                                borderRadius: 1.5,
+                                display: "grid",
+                                placeItems: "center",
+                                backgroundColor: alpha(item.accent, 0.12),
+                                color: item.accent,
                             }}
-                        />
-                        <Typography variant="h5" fontWeight={950} sx={{mt: 1}}>
-                            {name}
-                        </Typography>
-                        <Typography color="text.secondary" sx={{mt: 0.75, maxWidth: 720}}>
-                            {summary}
-                        </Typography>
-                    </Box>
+                        >
+                            <Icon icon={item.icon} width={26} height={26} />
+                        </Box>
+                        <Box sx={{minWidth: 0}}>
+                            <Chip
+                                label={item.category}
+                                size="small"
+                                sx={{
+                                    borderRadius: 1.25,
+                                    backgroundColor: alpha(item.accent, 0.12),
+                                    color: item.accent,
+                                    fontWeight: 700,
+                                }}
+                            />
+                            <Typography variant="h5" fontWeight={950} sx={{mt: 1}}>
+                                {item.name}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" fontWeight={800} sx={{mt: 0.25}}>
+                                {item.stack}
+                            </Typography>
+                        </Box>
+                    </Stack>
 
-                    <Button
-                        variant="contained"
-                        startIcon={<Icon icon="mdi:github" width={19} />}
-                        onClick={() => window.open(githubUrl, "_blank", "noopener,noreferrer")}
-                    >
-                        GitHub
-                    </Button>
+                    <Stack direction="row" spacing={1} sx={{flexShrink: 0}}>
+                        <Button
+                            variant="contained"
+                            startIcon={<Icon icon="mdi:github" width={19} />}
+                            onClick={() => window.open(item.githubUrl, "_blank", "noopener,noreferrer")}
+                            sx={{backgroundColor: item.accent, "&:hover": {backgroundColor: alpha(item.accent, 0.86)}}}
+                        >
+                            Code
+                        </Button>
+                        <Tooltip title={hasVideo ? "플레이 영상 보기" : "플레이 영상 준비 중"} arrow>
+                            <span>
+                                <Button
+                                    variant="outlined"
+                                    disabled={!hasVideo}
+                                    startIcon={<Icon icon="mdi:play-circle-outline" width={19} />}
+                                    onClick={() =>
+                                        item.videoUrl && window.open(item.videoUrl, "_blank", "noopener,noreferrer")
+                                    }
+                                >
+                                    영상
+                                </Button>
+                            </span>
+                        </Tooltip>
+                    </Stack>
+                </Stack>
+
+                <Typography sx={{lineHeight: 1.8, color: "text.secondary"}}>{item.summary}</Typography>
+
+                <StatRow item={item} />
+
+                <Stack spacing={1}>
+                    <Typography variant="subtitle2" fontWeight={900} color="text.secondary">
+                        플레이 / 처리 흐름
+                    </Typography>
+                    <FlowRow flow={item.flow} accent={item.accent} />
                 </Stack>
 
                 <Divider />
-                {children}
+
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: {xs: "1fr", md: "repeat(2, minmax(0, 1fr))"},
+                        gap: {xs: 2, md: 3},
+                    }}
+                >
+                    <ListBlock
+                        title="핵심 구현"
+                        icon="mdi:hammer-wrench"
+                        items={item.features}
+                        accent={item.accent}
+                    />
+                    <ListBlock
+                        title="검증 근거"
+                        icon="mdi:check-decagram-outline"
+                        items={item.verification}
+                        accent={item.accent}
+                    />
+                </Box>
+
+                <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap">
+                    {item.tech.map((tech) => (
+                        <Chip
+                            key={tech}
+                            label={tech}
+                            size="small"
+                            sx={{
+                                borderRadius: 1.25,
+                                backgroundColor: alpha("#0f766e", 0.09),
+                                color: "#0b4f4a",
+                                fontWeight: 700,
+                            }}
+                        />
+                    ))}
+                </Stack>
             </Stack>
         </Box>
-    );
-}
-
-function TagGroup({title, tags}: {title: string; tags: string[]}) {
-    return (
-        <Stack spacing={1}>
-            <Typography variant="subtitle2" color="text.secondary" fontWeight={900}>
-                {title}
-            </Typography>
-            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                {tags.map((tag) => (
-                    <Chip
-                        key={tag}
-                        label={tag}
-                        size="small"
-                        sx={{
-                            borderRadius: 1.25,
-                            backgroundColor: alpha("#0f766e", 0.09),
-                            color: "#0b4f4a",
-                        }}
-                    />
-                ))}
-            </Stack>
-        </Stack>
     );
 }
 
@@ -94,48 +234,19 @@ export default function Project() {
                     Project
                 </Typography>
                 <Typography variant="h4" fontWeight={950} sx={{mt: 0.5}}>
-                    대표 프로젝트
+                    플레이 가능한 상태까지 완성한 게임 프로젝트
                 </Typography>
-                <Typography color="text.secondary" sx={{mt: 1, maxWidth: 760}}>
-                    게임 구조 설계와 플레이 가능한 콘텐츠 구현을 중심으로 쌓아가고 있는 프로젝트입니다.
+                <Typography color="text.secondary" sx={{mt: 1, maxWidth: 820}}>
+                    3개 프로젝트에서 게임 루프 · 엔진 · 검증 역량을 나눠 증명합니다. 각 카드의 수치는 직접 실행하고
+                    기록한 결과이며, 확인하지 않은 범위는 완성된 기능으로 표기하지 않았습니다.
                 </Typography>
             </Box>
 
-            <Section
-                name="GameEngine 프로젝트"
-                category="C++ Game Engine"
-                githubUrl="https://github.com/blackvrice/GameEngine"
-                summary="C++ 기반으로 게임 루프, 렌더링, 입력, 씬 전환, 객체 관리 구조를 직접 구성하며 엔진 구조를 학습하고 확장하는 프로젝트입니다."
-            >
-                <Stack spacing={2}>
-                    <TagGroup title="주요 기술" tags={["C++", "SFML", "Custom Engine", "Game Loop", "Rendering"]} />
-                    <TagGroup title="핵심 관심사" tags={["Scene", "Entity", "Input", "Resource", "Architecture"]} />
-                </Stack>
-            </Section>
-
-            <Section
-                name="RTS 프로젝트"
-                category="C++ RTS Game"
-                githubUrl="https://github.com/blackvrice/rts"
-                summary="C++와 SFML 기반의 실시간 전략 게임 프로젝트입니다. 유닛 선택, 명령 처리, 전투, 자원 채집, 안개 시야 같은 RTS 핵심 시스템을 직접 구현하고 있습니다."
-            >
-                <Stack spacing={2}>
-                    <TagGroup title="주요 기술" tags={["C++", "SFML", "CMake", "Tiled Map", "tmxlite"]} />
-                    <TagGroup title="구현 영역" tags={["Unit Control", "Command", "Combat", "Resource", "Fog of War"]} />
-                </Stack>
-            </Section>
-
-            <Section
-                name="Tycoon 프로젝트"
-                category="Unity Tycoon Game"
-                githubUrl="https://github.com/blackvrice/Tycoon"
-                summary="Unity 기반의 타이쿤/농장형 게임 프로젝트입니다. 플레이어 이동, 씬 이동, 농장 상호작용, 작물 데이터와 UI 흐름을 실제 게임 플레이에 맞춰 구현하고 있습니다."
-            >
-                <Stack spacing={2}>
-                    <TagGroup title="주요 기술" tags={["Unity", "C#", "ScriptableObject", "Tilemap", "UI Toolkit"]} />
-                    <TagGroup title="구현 영역" tags={["Player", "Farm", "Crop", "Scene Flow", "Inventory"]} />
-                </Stack>
-            </Section>
+            <Stack spacing={2}>
+                {projects.map((item) => (
+                    <ProjectCard key={item.name} item={item} />
+                ))}
+            </Stack>
         </Stack>
     );
 }

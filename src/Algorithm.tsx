@@ -8,7 +8,11 @@ const profiles = [
         href: "https://solved.ac/profile/blackvrice",
         icon: "simple-icons:baekjoon",
         color: "#0076c0",
-        points: ["문제 해결 루틴 유지", "자료구조와 그래프 중심 학습", "C++ 풀이 경험 축적"],
+        points: [
+            "그래프·경로 탐색 중심 학습 (RTS A* 구현으로 연결)",
+            "자료구조 선택이 성능에 주는 영향 정리",
+            "C++ 풀이 경험 축적",
+        ],
     },
     {
         label: "Programmers",
@@ -31,7 +35,8 @@ export default function AlgorithmCardsExpandable() {
                     문제 해결력을 꾸준히 다지는 공간
                 </Typography>
                 <Typography color="text.secondary" sx={{mt: 1, maxWidth: 760}}>
-                    코딩 테스트 대비뿐 아니라, 구현을 더 단단하게 만드는 사고 훈련으로 알고리즘 문제를 정리하고 있습니다.
+                    코딩 테스트 대비뿐 아니라, 게임 로직 구현을 더 단단하게 만드는 사고 훈련으로 알고리즘 문제를
+                    정리하고 있습니다.
                 </Typography>
             </Box>
 

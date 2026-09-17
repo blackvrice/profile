@@ -16,12 +16,14 @@ import Algorithm from "./Algorithm.tsx";
 import Layout from "./layout.tsx";
 import Career from "./Career.tsx";
 import Project from "./Project.tsx";
+import Strength from "./Strength.tsx";
 import background from "./assets/background.jpg";
 
 const sections = [
+    {label: "Project", icon: "mdi:gamepad-variant-outline"},
+    {label: "Strength", icon: "mdi:target-account"},
     {label: "Career", icon: "mdi:briefcase-outline"},
     {label: "Algorithm", icon: "mdi:code-tags"},
-    {label: "Project", icon: "mdi:folder-star-outline"},
     {label: "Study", icon: "mdi:book-open-variant"},
 ];
 
@@ -75,9 +77,10 @@ function App() {
     );
 
     const activePanel = [
+        <Project key="project" />,
+        <Strength key="strength" />,
         <Career key="career" />,
         <Algorithm key="algorithm" />,
-        <Project key="project" />,
         <StudyPanel key="study" />,
     ][tab];
 
@@ -179,9 +182,11 @@ function App() {
 
 function StudyPanel() {
     const studies = [
-        "Clean Architecture와 테스트 가능한 코드 구조",
-        "게임 클라이언트 구조와 실시간 렌더링",
-        "Next.js, Prisma, Electron 기반 제품화 흐름",
+        "게임 루프와 결정론적 시뮬레이션 (Fixed Tick · Replay · 상태 해시)",
+        "멀티스레드 환경에서의 로직/렌더링 경계 설계",
+        "Unreal Engine C++ 게임플레이 프레임워크와 Blueprint 경계 나누기",
+        "Unity Test Framework 기반 PlayMode·EditMode 자동화 검증",
+        "테스트 가능한 코드 구조와 계층별 책임 분리",
     ];
 
     return (
