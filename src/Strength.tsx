@@ -31,12 +31,12 @@ const fitRows: FitRow[] = [
     {
         requirement: "Git 버전 관리",
         ability: "Git 기반 협업 · 형상 관리",
-        evidence: "6개 GitHub 저장소 · 실무 3개사",
+        evidence: "7개 GitHub 저장소 · 실무 3개사",
     },
     {
         requirement: "관계형 데이터베이스 경험",
         ability: "Oracle, PostgreSQL, MySQL",
-        evidence: "위시정보기술 · 노리시스템",
+        evidence: "위시정보기술 · 노리시스템 · backjoon(Prisma)",
     },
     {
         requirement: "네트워크 · 소켓 프로그래밍 이해",

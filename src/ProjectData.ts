@@ -4,23 +4,32 @@ export type ProjectStat = { value: string; label: string };
 /** 실제로 부딪힌 문제와 해결 방법 */
 export type ProjectIssue = { problem: string; solution: string };
 
+/** 프로젝트 분류 */
+export type ProjectGroup = "game" | "wpf" | "web";
+
 export type ProjectItem = {
+    group: ProjectGroup;
     name: string;
     category: string;
     /** 엔진 · 언어 · 빌드 환경 */
     stack: string;
+    /** 진행 상태 배지 (없으면 표시하지 않음) */
+    status?: string;
+    statusTone?: "done" | "wip";
     summary: string;
     /** 카드 상단 강조 수치 */
-    stats: ProjectStat[];
-    /** 플레이 흐름 (좌 → 우) */
-    flow: string[];
+    stats?: ProjectStat[];
+    /** 플레이 / 처리 흐름 (좌 → 우) */
+    flow?: string[];
     tech: string[];
     features: string[];
     /** 직접 돌려본 검증 근거 */
-    verification: string[];
+    verification?: string[];
     /** 문제 해결 기록 */
     issues?: ProjectIssue[];
     githubUrl: string;
+    /** 배포된 사이트 주소 */
+    liveUrl?: string;
     /** YouTube 영상 ID. 채우면 썸네일과 재생 버튼이 표시됩니다. */
     videoId?: string;
     /** 영상 썸네일 아래 캡션 */
@@ -28,6 +37,40 @@ export type ProjectItem = {
     accent: string;
     icon: string;
 };
+
+export type GroupMeta = {
+    key: ProjectGroup;
+    overline: string;
+    title: string;
+    description: string;
+    icon: string;
+};
+
+export const groupMeta: GroupMeta[] = [
+    {
+        key: "game",
+        overline: "Game",
+        title: "플레이 가능한 상태까지 완성한 게임 프로젝트",
+        description:
+            "게임 루프 · 엔진 · 검증 역량을 나눠 증명합니다. 썸네일을 누르면 실제 플레이 영상이 열리고, 카드의 수치와 문제 해결 기록은 직접 실행하며 남긴 결과입니다.",
+        icon: "mdi:gamepad-variant-outline",
+    },
+    {
+        key: "wpf",
+        overline: "WPF Desktop",
+        title: "장비 제어 구조를 개인 프로젝트로 다시 설계",
+        description:
+            "실무에서 다룬 상태 관리와 장치 추상화를, 하드웨어 없이도 전 과정을 시연할 수 있는 형태로 재구성했습니다.",
+        icon: "mdi:monitor-dashboard",
+    },
+    {
+        key: "web",
+        overline: "Web",
+        title: "필요한 도구는 직접 만들어 씁니다",
+        description: "문제 풀이 관리와 포트폴리오처럼, 스스로 쓸 도구를 웹으로 만들고 운영합니다.",
+        icon: "mdi:web",
+    },
+];
 
 /** YouTube 영상 ID로 시청 URL을 만듭니다. */
 export const youtubeUrl = (videoId: string) => `https://youtu.be/${videoId}`;
@@ -38,6 +81,7 @@ export const youtubeThumbnail = (videoId: string, quality: "maxres" | "hq" = "ma
 
 export const projects: ProjectItem[] = [
     {
+        group: "game",
         name: "RTS",
         category: "C++ 실시간 전략 게임 · 개인 프로젝트",
         stack: "C++23 · SFML3 · OpenGL · CMake",
@@ -82,6 +126,7 @@ export const projects: ProjectItem[] = [
         icon: "mdi:chess-rook",
     },
     {
+        group: "game",
         name: "Tycoon",
         category: "Unity 경영·농장 게임 · 개인 프로젝트",
         stack: "Unity 6000.3.10f1 · C# · UI Toolkit",
@@ -126,6 +171,7 @@ export const projects: ProjectItem[] = [
         icon: "mdi:sprout-outline",
     },
     {
+        group: "game",
         name: "ArenaShooter",
         category: "Unreal Engine 5.6 3인칭 웨이브 슈터 · 개인 프로젝트",
         stack: "Unreal Engine 5.6 · C++ · Windows Shipping",
@@ -170,64 +216,135 @@ export const projects: ProjectItem[] = [
         accent: "#7c3aed",
         icon: "mdi:target",
     },
-];
-
-/** 게임 외 영역에서 구조 설계와 검증을 연습한 프로젝트 */
-export type SideProject = {
-    name: string;
-    category: string;
-    stack: string;
-    status: string;
-    statusTone: "done" | "wip";
-    summary: string;
-    points: string[];
-    tech: string[];
-    githubUrl: string;
-    accent: string;
-    icon: string;
-};
-
-export const sideProjects: SideProject[] = [
     {
+        group: "game",
+        name: "StarCraft Map Editor",
+        category: "Flutter 데스크톱 · 게임 맵 에디터 · 오픈소스",
+        stack: "Flutter 3.44.8 · Dart · StormLib · euddraft",
+        status: "개발 중 · M6.2",
+        statusTone: "wip",
+        summary:
+            "StarCraft: Remastered용 UMS 맵 에디터입니다. 지형 · 유닛 · 트리거 · EUD 편집을 하나의 작업 흐름으로 묶는 것을 목표로 개발하고 있으며, 완료한 범위와 남은 범위를 그대로 공개하고 있습니다.",
+        stats: [
+            {value: "M0–M6.1", label: "완료 마일스톤"},
+            {value: "CHK / MPQ", label: "바이너리 포맷 처리"},
+            {value: "EUD", label: "빌드 · 진단 연동"},
+        ],
+        flow: ["맵 열기", "CHK 파싱", "지형·오브젝트 편집", "EUD 빌드", "검증 후 저장"],
+        tech: ["Flutter", "Dart", "StormLib / MPQ", "CHK Format", "euddraft / eudplib"],
+        features: [
+            "CHK 시나리오 포맷을 섹션 순서와 원본 바이트를 보존하며 파싱",
+            "MPQ 어댑터 뒤에 StormLib 헬퍼를 서브프로세스로 두어 아카이브 처리 격리",
+            "euddraft / eudplib 서브프로세스 어댑터로 EUD 빌드와 진단 메시지 연동",
+            "지형 · 유닛 · 위치 · 플레이어 · 종족 · 문자열 편집",
+            "UI / 애플리케이션 로직 / 아카이브 / 데이터 모델 / EUD를 계층으로 분리",
+        ],
+        verification: [
+            "자동 백업 · 충돌 감지 · 유효성 검사로 맵 손상 방지",
+            "M0~M6.1 완료: 안전한 맵 열기, 지형·오브젝트 렌더링과 편집, EUD 빌드 기반 검증",
+            "남은 범위: EUD 프로젝트 설정 UI · 맵 설정 화면 · 일반 트리거 편집",
+        ],
+        issues: [
+            {
+                problem: "에디터가 해석하지 못하는 CHK 섹션을 저장하면 원본 데이터가 손실될 위험",
+                solution:
+                    "알 수 없는 섹션과 원본 바이트를 순서까지 그대로 보존해, 편집하지 않은 영역은 손상 없이 되돌려 저장",
+            },
+        ],
+        githubUrl: "https://github.com/blackvrice/starcraft_map_editor",
+        accent: "#1d4ed8",
+        icon: "mdi:map-legend",
+    },
+    {
+        group: "wpf",
         name: "PlotterCanvas",
-        category: "WPF 데스크톱 · XY 모션 제어 시뮬레이션",
+        category: "WPF 드로잉 · XY 모션 제어 시뮬레이션 · 개인 프로젝트",
         stack: "C# 12 · .NET 8 · WPF/MVVM · C++17",
         status: "223개 테스트 통과",
         statusTone: "done",
         summary:
-            "캔버스에 그린 도형을 기계 명령으로 변환해 가상 플로터가 실행합니다. 실제 장비 없이도 전 과정을 시연할 수 있도록 가상 장치를 기준으로 만들었습니다.",
-        points: [
-            "WPF View → ViewModel → Application Service → Device 추상화 → Transport 단방향 의존 계층 설계",
-            "ViewModel은 WPF 참조 없는 순수 .NET으로 작성해 표현 로직을 플랫폼과 분리",
+            "캔버스에 그린 도형을 기계 명령으로 변환해 가상 플로터가 실행합니다. 실제 장비 없이도 전 과정을 시연할 수 있도록 가상 장치를 기준으로 만들었고, 같은 추상화로 TCP와 Serial 연결을 교체할 수 있습니다.",
+        stats: [
+            {value: "223", label: "xUnit 테스트 통과"},
+            {value: "92%", label: "경로 포인트 감소"},
+            {value: "3종", label: "Virtual · TCP · Serial"},
+        ],
+        flow: ["드로잉", "경로 최적화", "기계 명령 변환", "장치 전송", "플로터 실행"],
+        tech: ["C# 12", ".NET 8", "WPF", "MVVM", "C++17 / P-Invoke", "xUnit", "TCP / Serial"],
+        features: [
+            "WPF View → ViewModel → Application Service → Device 추상화 → Transport 단방향 의존 계층",
+            "ViewModel을 WPF 참조 없는 순수 .NET으로 작성해 표현 로직을 플랫폼과 분리",
             "하나의 Device 추상화로 Virtual · TCP · Serial 세 구현을 교체 가능하게 구성",
-            "윤곽 평탄화 · 단순화 · 재정렬로 경로 포인트를 약 92% 감소",
-            "Fault Injection으로 타임아웃 복구 · 연결 끊김 · 오류 시나리오를 의도적으로 재현",
+            "자유곡선 · 선 · 도형 · 텍스트 · 이미지와 선택 · 변형 · 전체 Undo/Redo",
+            "원점 복귀 · 조그 · 경로 실행과 일시정지 / 재개 / 정지 제어",
             "핵심 프로젝트에 외부 NuGet 의존 없이 DI · 로깅 · MVVM을 직접 구현",
         ],
-        tech: ["C# 12", ".NET 8", "WPF", "MVVM", "C++17 / P-Invoke", "xUnit", "TCP / Serial"],
+        verification: [
+            "xUnit 223개 전부 통과, 요구사항 추적성과 함께 관리",
+            "Fault Injection으로 타임아웃 복구 · 연결 끊김 · 오류 시나리오를 의도적으로 재현",
+            "ASCII 프레이밍 TCP와 물리 / 가상 시리얼 포트 양쪽에서 동작 확인",
+            "미구현 범위(이미지 가져오기 · 인라인 텍스트 편집)를 문서에 명시",
+        ],
+        issues: [
+            {
+                problem: "드로잉을 그대로 명령으로 바꾸면 포인트가 과도해 실행이 느려짐",
+                solution: "윤곽 평탄화 · 단순화 · 재정렬을 거쳐 포인트 밀도를 약 92% 줄이고 실행 경로를 정리",
+            },
+            {
+                problem: "실제 장비가 없어 통신 오류 상황을 검증할 방법이 없음",
+                solution:
+                    "Fault Injection을 넣어 타임아웃 · 연결 끊김 · 프로토콜 오류를 의도적으로 발생시키고 복구 경로를 테스트로 고정",
+            },
+        ],
         githubUrl: "https://github.com/blackvrice/PlotterCanvas",
         accent: "#0369a1",
         icon: "mdi:pencil-ruler",
     },
     {
-        name: "StarCraft Map Editor",
-        category: "Flutter 데스크톱 · 게임 맵 에디터",
-        stack: "Flutter 3.44.8 · Dart · StormLib · euddraft",
-        status: "개발 중 (M6.2)",
-        statusTone: "wip",
+        group: "web",
+        name: "backjoon",
+        category: "Next.js 문제 풀이 관리 시스템 · 개인 프로젝트",
+        stack: "Next.js · PostgreSQL · Prisma · Docker",
+        status: "구현 완료",
+        statusTone: "done",
         summary:
-            "StarCraft: Remastered용 오픈소스 UMS 맵 에디터입니다. 지형·유닛·트리거·EUD 편집을 하나의 작업 흐름으로 묶는 것을 목표로 개발하고 있습니다.",
-        points: [
-            "CHK 시나리오 포맷을 순서와 원본 바이트를 보존하며 파싱 — 모르는 섹션도 손상 없이 되돌려 저장",
-            "MPQ 어댑터 뒤에 StormLib 헬퍼를 서브프로세스로 두어 아카이브 처리 격리",
-            "euddraft / eudplib 서브프로세스 어댑터로 EUD 빌드와 진단 메시지 연동",
-            "자동 백업 · 충돌 감지 · 유효성 검사로 맵 손상 방지",
-            "M0~M6.1 완료 — 안전한 맵 열기, 지형·오브젝트 렌더링과 편집, EUD 빌드 기반 검증",
-            "남은 범위: EUD 프로젝트 설정 UI, 맵 설정 화면, 일반 트리거 편집",
+            "백준 문제 풀이를 관리하려고 직접 만든 어드민입니다. 문제 · 제출 · 사용자 · 로그를 한 화면에서 다루고, 초기 샘플 배열 구조를 PostgreSQL + Prisma API로 마이그레이션했습니다.",
+        flow: ["문제 등록", "제출 수집", "채점 워커", "로그 기록", "요약 대시보드"],
+        tech: ["Next.js", "TypeScript", "PostgreSQL", "Prisma ORM", "Docker"],
+        features: [
+            "문제 관리 · 제출 추적 · 사용자 관리 · 시스템 로그 · 요약 대시보드",
+            "어드민 페이지와 대응하는 API 라우트를 분리해 구성",
+            "Prisma + pg 어댑터 기반 스키마와 시드 스크립트",
+            "Docker로 데이터베이스 환경 구성",
         ],
-        tech: ["Flutter", "Dart", "StormLib / MPQ", "CHK Format", "euddraft"],
-        githubUrl: "https://github.com/blackvrice/starcraft_map_editor",
-        accent: "#0f766e",
-        icon: "mdi:map-legend",
+        issues: [
+            {
+                problem: "샘플 배열에서 실제 DB로 옮기면 채점 워커가 참조하던 필드가 깨질 위험",
+                solution: "워커가 사용하던 기존 필드를 스키마에 그대로 보존해 마이그레이션 후에도 호환되도록 설계",
+            },
+        ],
+        githubUrl: "https://github.com/blackvrice/backjoon",
+        accent: "#166534",
+        icon: "mdi:database-cog-outline",
+    },
+    {
+        group: "web",
+        name: "profile",
+        category: "React 웹 포트폴리오 · 지금 보고 계신 사이트",
+        stack: "React 18 · TypeScript · Vite · MUI",
+        status: "운영 중",
+        statusTone: "done",
+        summary:
+            "경력과 프로젝트를 직접 관리하려고 만든 포트폴리오 사이트입니다. 내용을 데이터 파일로 분리해 두어, 새 프로젝트가 생기면 데이터만 추가하면 화면이 따라옵니다.",
+        tech: ["React 18", "TypeScript", "Vite", "MUI", "GitHub Actions", "GitHub Pages"],
+        features: [
+            "프로젝트 · 경력 · 역량을 데이터 파일로 분리해 화면 코드와 독립적으로 관리",
+            "GitHub Actions로 빌드 후 GitHub Pages에 자동 배포, 커스텀 도메인 연결",
+            "모바일까지 고려한 반응형 레이아웃과 접근성 속성 적용",
+        ],
+        githubUrl: "https://github.com/blackvrice/profile",
+        liveUrl: "https://profile.blackvrice.com",
+        accent: "#b45309",
+        icon: "mdi:account-box-outline",
     },
 ];
