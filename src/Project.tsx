@@ -1,6 +1,107 @@
 import {alpha, Box, Button, Chip, Divider, Stack, Tooltip, Typography} from "@mui/material";
 import {Icon} from "@iconify/react";
-import {projects, type ProjectItem} from "./ProjectData.ts";
+import {projects, youtubeThumbnail, youtubeUrl, type ProjectItem} from "./ProjectData.ts";
+
+function VideoThumb({item}: {item: ProjectItem}) {
+    if (!item.videoId) return null;
+    const href = youtubeUrl(item.videoId);
+
+    return (
+        <Stack spacing={0.75}>
+            <Box
+                component="a"
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${item.name} 플레이 영상 보기 (YouTube)`}
+                sx={{
+                    position: "relative",
+                    display: "block",
+                    borderRadius: 2,
+                    overflow: "hidden",
+                    aspectRatio: "16 / 9",
+                    border: "1px solid",
+                    borderColor: alpha(item.accent, 0.28),
+                    backgroundColor: alpha(item.accent, 0.08),
+                    boxShadow: `0 14px 34px ${alpha("#18211f", 0.16)}`,
+                    "&:hover .thumb-img": {transform: "scale(1.04)"},
+                    "&:hover .thumb-play": {transform: "translate(-50%, -50%) scale(1.08)"},
+                    "&:focus-visible": {outline: `3px solid ${item.accent}`, outlineOffset: 2},
+                }}
+            >
+                <Box
+                    component="img"
+                    className="thumb-img"
+                    src={youtubeThumbnail(item.videoId)}
+                    alt={`${item.name} 플레이 영상 썸네일`}
+                    loading="lazy"
+                    decoding="async"
+                    onError={(event) => {
+                        const img = event.currentTarget as HTMLImageElement;
+                        const fallback = youtubeThumbnail(item.videoId as string, "hq");
+                        if (!img.src.endsWith("hqdefault.jpg")) img.src = fallback;
+                    }}
+                    sx={{
+                        display: "block",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        transition: "transform .35s ease",
+                    }}
+                />
+                <Box
+                    sx={{
+                        position: "absolute",
+                        inset: 0,
+                        background: `linear-gradient(180deg, ${alpha("#18211f", 0)} 45%, ${alpha(
+                            "#18211f",
+                            0.55,
+                        )} 100%)`,
+                    }}
+                />
+                <Box
+                    className="thumb-play"
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        transition: "transform .25s ease",
+                        width: 62,
+                        height: 44,
+                        borderRadius: 1.5,
+                        display: "grid",
+                        placeItems: "center",
+                        backgroundColor: alpha("#ff0000", 0.92),
+                        color: "#ffffff",
+                        boxShadow: `0 8px 20px ${alpha("#18211f", 0.35)}`,
+                    }}
+                >
+                    <Icon icon="mdi:play" width={28} height={28} />
+                </Box>
+                <Chip
+                    label="PLAY"
+                    size="small"
+                    sx={{
+                        position: "absolute",
+                        left: 10,
+                        bottom: 10,
+                        borderRadius: 1,
+                        fontWeight: 900,
+                        letterSpacing: 0.6,
+                        backgroundColor: alpha("#ffffff", 0.92),
+                        color: "#18211f",
+                    }}
+                />
+            </Box>
+            {item.videoCaption && (
+                <Typography variant="caption" color="text.secondary" sx={{lineHeight: 1.6}}>
+                    {item.videoCaption}
+                </Typography>
+            )}
+        </Stack>
+    );
+}
 
 function StatRow({item}: {item: ProjectItem}) {
     return (
@@ -92,7 +193,7 @@ function ListBlock({
 }
 
 function ProjectCard({item}: {item: ProjectItem}) {
-    const hasVideo = Boolean(item.videoUrl);
+    const hasVideo = Boolean(item.videoId);
 
     return (
         <Box
@@ -155,14 +256,15 @@ function ProjectCard({item}: {item: ProjectItem}) {
                         >
                             Code
                         </Button>
-                        <Tooltip title={hasVideo ? "플레이 영상 보기" : "플레이 영상 준비 중"} arrow>
+                        <Tooltip title={hasVideo ? "플레이 영상 보기 (YouTube)" : "플레이 영상 준비 중"} arrow>
                             <span>
                                 <Button
                                     variant="outlined"
                                     disabled={!hasVideo}
-                                    startIcon={<Icon icon="mdi:play-circle-outline" width={19} />}
+                                    startIcon={<Icon icon="mdi:youtube" width={19} />}
                                     onClick={() =>
-                                        item.videoUrl && window.open(item.videoUrl, "_blank", "noopener,noreferrer")
+                                        item.videoId &&
+                                        window.open(youtubeUrl(item.videoId), "_blank", "noopener,noreferrer")
                                     }
                                 >
                                     영상
@@ -172,9 +274,20 @@ function ProjectCard({item}: {item: ProjectItem}) {
                     </Stack>
                 </Stack>
 
-                <Typography sx={{lineHeight: 1.8, color: "text.secondary"}}>{item.summary}</Typography>
-
-                <StatRow item={item} />
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: {xs: "1fr", md: hasVideo ? "1fr minmax(300px, 390px)" : "1fr"},
+                        gap: {xs: 2, md: 3},
+                        alignItems: "start",
+                    }}
+                >
+                    <Stack spacing={2}>
+                        <Typography sx={{lineHeight: 1.8, color: "text.secondary"}}>{item.summary}</Typography>
+                        <StatRow item={item} />
+                    </Stack>
+                    <VideoThumb item={item} />
+                </Box>
 
                 <Stack spacing={1}>
                     <Typography variant="subtitle2" fontWeight={900} color="text.secondary">
@@ -237,8 +350,9 @@ export default function Project() {
                     플레이 가능한 상태까지 완성한 게임 프로젝트
                 </Typography>
                 <Typography color="text.secondary" sx={{mt: 1, maxWidth: 820}}>
-                    3개 프로젝트에서 게임 루프 · 엔진 · 검증 역량을 나눠 증명합니다. 각 카드의 수치는 직접 실행하고
-                    기록한 결과이며, 확인하지 않은 범위는 완성된 기능으로 표기하지 않았습니다.
+                    3개 프로젝트에서 게임 루프 · 엔진 · 검증 역량을 나눠 증명합니다. 썸네일을 누르면 실제 플레이
+                    영상이 열리고, 카드의 수치는 직접 실행하고 기록한 결과입니다. 확인하지 않은 범위는 완성된 기능으로
+                    표기하지 않았습니다.
                 </Typography>
             </Box>
 

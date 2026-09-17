@@ -4,7 +4,6 @@ import {
     Box,
     Button,
     Chip,
-    Divider,
     IconButton,
     Snackbar,
     Stack,
@@ -234,6 +233,8 @@ END:VCARD`;
                     content="RTS(C++23) · Tycoon(Unity 6) · ArenaShooter(UE5.6) 프로젝트와 장비 제어 실무로 증명한 상태·비동기·검증 역량."
                 />
                 <meta property="og:type" content="profile" />
+                <meta property="og:image" content="https://img.youtube.com/vi/g9drIxSF76o/maxresdefault.jpg" />
+                <meta name="twitter:card" content="summary_large_image" />
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",
@@ -268,7 +269,7 @@ END:VCARD`;
                 direction={{xs: "column", md: "row"}}
                 spacing={{xs: 3, md: 5}}
                 alignItems={{xs: "stretch", md: "center"}}
-                sx={{p: {xs: 2.5, sm: 3.5, md: 5}}}
+                sx={{p: {xs: 2.5, sm: 3.5, md: 4}}}
             >
                 <Stack spacing={2.25} sx={{flex: 1, minWidth: 0}}>
                     <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
@@ -334,16 +335,12 @@ END:VCARD`;
                                 lineHeight: 1.8,
                             }}
                         >
-                            C# 장비 제어 실무에서 다룬 상태·비동기·복구 경험을 C++ · Unity · Unreal 프로젝트의 게임
-                            루프와 플레이 시스템 설계로 확장했습니다. 웹 백엔드 실무에서 쌓은 데이터 처리와 성능
-                            개선 경험도 함께 가지고 있습니다.
+                            C# 장비 제어 실무의 상태·비동기·복구 경험을 C++ · Unity · Unreal 프로젝트의 게임 루프
+                            설계로 확장했습니다. 웹 백엔드 실무의 데이터 처리 경험도 함께 가지고 있습니다.
                         </Typography>
                     </Box>
 
-                    <Stack
-                        direction={{xs: "column", sm: "row"}}
-                        spacing={1}
-                        divider={<Divider orientation="vertical" flexItem />}
+                    <Box
                         sx={{
                             maxWidth: 600,
                             p: 1.5,
@@ -351,6 +348,9 @@ END:VCARD`;
                             backgroundColor: alpha("#ffffff", 0.68),
                             border: "1px solid",
                             borderColor: alpha("#0f766e", 0.14),
+                            display: "grid",
+                            gridTemplateColumns: {xs: "repeat(2, minmax(0, 1fr))", sm: "repeat(4, minmax(0, 1fr))"},
+                            rowGap: 1.5,
                         }}
                     >
                         {[
@@ -358,8 +358,20 @@ END:VCARD`;
                             ["3개", "게임 프로젝트"],
                             ["2 + 2", "언어 2 · 엔진 2"],
                             [`${age}세`, "1997.02.23"],
-                        ].map(([value, label]) => (
-                            <Box key={label} sx={{flex: 1, minWidth: 0}}>
+                        ].map(([value, label], index) => (
+                            <Box
+                                key={label}
+                                sx={{
+                                    minWidth: 0,
+                                    px: {xs: 1, sm: 1.25},
+                                    borderLeft: index === 0 ? "none" : "1px solid",
+                                    borderLeftColor: alpha("#0f766e", 0.14),
+                                    "&:nth-of-type(3)": {
+                                        borderLeft: {xs: "none", sm: "1px solid"},
+                                        borderLeftColor: {sm: alpha("#0f766e", 0.14)},
+                                    },
+                                }}
+                            >
                                 <Typography fontWeight={950} fontSize={19}>
                                     {value}
                                 </Typography>
@@ -368,7 +380,7 @@ END:VCARD`;
                                 </Typography>
                             </Box>
                         ))}
-                    </Stack>
+                    </Box>
 
                     <SkillsRow />
 

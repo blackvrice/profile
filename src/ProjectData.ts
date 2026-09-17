@@ -16,11 +16,20 @@ export type ProjectItem = {
     /** 직접 돌려본 검증 근거 */
     verification: string[];
     githubUrl: string;
-    /** 플레이 영상 (URL을 채우면 버튼이 활성화됩니다) */
-    videoUrl?: string;
+    /** YouTube 영상 ID. 채우면 썸네일과 재생 버튼이 표시됩니다. */
+    videoId?: string;
+    /** 영상 썸네일 아래 캡션 */
+    videoCaption?: string;
     accent: string;
     icon: string;
 };
+
+/** YouTube 영상 ID로 시청 URL을 만듭니다. */
+export const youtubeUrl = (videoId: string) => `https://youtu.be/${videoId}`;
+
+/** YouTube 영상 ID로 썸네일 URL을 만듭니다. */
+export const youtubeThumbnail = (videoId: string, quality: "maxres" | "hq" = "maxres") =>
+    `https://img.youtube.com/vi/${videoId}/${quality}default.jpg`;
 
 export const projects: ProjectItem[] = [
     {
@@ -50,7 +59,8 @@ export const projects: ProjectItem[] = [
             "CTest rts_headless_smoke 1/1 통과 · 수동 QA 체크리스트 병행",
         ],
         githubUrl: "https://github.com/blackvrice/rts",
-        videoUrl: "",
+        videoId: "g9drIxSF76o",
+        videoCaption: "고정 틱 · A* 유닛 이동 · 전투 · 안개 시야 플레이",
         accent: "#0f766e",
         icon: "mdi:chess-rook",
     },
@@ -79,7 +89,8 @@ export const projects: ProjectItem[] = [
             "Windows Build로 실제 플레이 루프 확인",
         ],
         githubUrl: "https://github.com/blackvrice/Tycoon",
-        videoUrl: "",
+        videoId: "VSVncw0xsNU",
+        videoCaption: "3–5분 경영 루프 · 수확 → 판매 → 재투자 → Save/Load",
         accent: "#e76f51",
         icon: "mdi:sprout-outline",
     },
@@ -109,7 +120,8 @@ export const projects: ProjectItem[] = [
             "Windows Shipping 패키징 EXE 실행 확인",
         ],
         githubUrl: "https://github.com/blackvrice/ArenaShooter",
-        videoUrl: "",
+        videoId: "qMS_WJlHeEc",
+        videoCaption: "Title → 5라운드 → 3 Phase Boss → Clear",
         accent: "#7c3aed",
         icon: "mdi:target",
     },

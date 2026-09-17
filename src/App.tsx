@@ -118,6 +118,9 @@ function App() {
 
                     <Box
                         sx={{
+                            position: "sticky",
+                            top: {xs: 8, md: 12},
+                            zIndex: 10,
                             mt: {xs: 2, md: 3},
                             px: 1,
                             py: 1,
