@@ -11,7 +11,7 @@ const fitRows: FitRow[] = [
     {
         requirement: "C++ / C# 개발 역량",
         ability: "C++23, C# 12",
-        evidence: "RTS · ArenaShooter · Tycoon · 앤서레이 장비 제어",
+        evidence: "RTS · ArenaShooter · Tycoon · PlotterCanvas · 앤서레이",
     },
     {
         requirement: "자료구조 · 알고리즘 이해",
@@ -31,7 +31,7 @@ const fitRows: FitRow[] = [
     {
         requirement: "Git 버전 관리",
         ability: "Git 기반 협업 · 형상 관리",
-        evidence: "3개 GitHub 저장소 · 실무 3개사",
+        evidence: "6개 GitHub 저장소 · 실무 3개사",
     },
     {
         requirement: "관계형 데이터베이스 경험",
@@ -42,6 +42,16 @@ const fitRows: FitRow[] = [
         requirement: "네트워크 · 소켓 프로그래밍 이해",
         ability: "TCP/IP, Serial, RS-485, USB",
         evidence: "앤서레이 장비 통신 제어",
+    },
+    {
+        requirement: "자동화 테스트 · 검증 습관",
+        ability: "xUnit, Unity Test Framework, CTest",
+        evidence: "PlotterCanvas 223개 · Tycoon 78개 · RTS Headless Smoke",
+    },
+    {
+        requirement: "성능 개선 · 원인 추적",
+        ability: "프로파일링 기반 병목 제거",
+        evidence: "RTS 점유 조회 O(n) → O(1) · 경로 포인트 92% 감소",
     },
     {
         requirement: "프로젝트 기획 · 완성 경험",
